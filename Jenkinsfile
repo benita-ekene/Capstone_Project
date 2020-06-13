@@ -16,59 +16,54 @@ pipeline {
         }
       }
     }
-    stage('Create EC2 Instance') {
-      steps {
-        ansiblePlaybook playbook: 'main.yaml', inventory: 'inventory'
-      }
-    }
-				stage('Build') {
-										steps {
-														sh 'echo "Hello World"'
-														sh '''
-																		echo "Multiline shell steps works too"
-																		ls -lah
-																		cd Docker/
-																		make install
-														'''
-										}
-						}
-						stage('Lint docker and pyhton') {
-										steps {
-											sh '''
-																		cd Docker/
-															make lint
-														'''
-										}
-						}
-						stage('Build Docker Image') {
-							steps {
-								sh '''
-																								cd Docker/
-																								bash build_docker.sh
-																				'''
-							}
-						}
-						stage('Push Image To Dockerhub') {
-								steps {
-									withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub', usernameVariable: 'DOCKER_USER ', passwordVariable: 'DOCKER_PASSWORD ']]){
-										sh '''
-																													touch ~/dockerHubPassword
-																													chmod 777 ~/dockerHubPassword
-																													echo "$DOCKER_PASSWORD" > ~/dockerHubPassword
-																													docker login --username ben1ta --password-stdin < /home/ubuntu/dockerHubPassword
-											
-																													docker tag app ben1ta/app
-											docker push ben1ta/app
-										'''
-									}
-							}
-					}
-					/*stage('Create kubernetes cluster') {
+    stage('Build') {
+            steps {
+                sh 'echo "Hello World"'
+                sh '''
+                    echo "Multiline shell steps works too"
+                    ls -lah
+                    cd Docker/
+                    make install
+                '''
+            }
+        }
+        stage('Lint docker and pyhton') {
+            steps {
+        	    sh '''
+                    cd Docker/
+        	        make lint
+                '''
+            }
+        }
+	stage('Build Docker Image') {
+		steps {
+			sh '''
+                    cd Docker/
+                    bash build_docker.sh
+                '''
+			}
+		}
+                stage('Push Image To Dockerhub') {
 			steps {
-				withAWS(region:'us-west-2', credentials:'eks_cred') {
+				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub', usernameVariable: 'DOCKER_USER ', passwordVariable: 'DOCKER_PASSWORD ']]){
+					sh '''
+                        touch ~/dockerHubPassword
+                        chmod 777 ~/dockerHubPassword
+                        echo "$DOCKER_PASSWORD" > ~/dockerHubPassword
+                        docker login --username ben1ta --password-stdin < /home/ubuntu/dockerHubPassword
+						
+                        docker tag priceprediction ben1ta/app
+						docker push ben1ta/app
+					'''
+				}
+			}
+		}
+                stage('Create kubernetes cluster') {
+			steps {
+				withAWS(region:'us-west-2', credentials:'aws-esk') {
 					sh '''
 						eksctl create cluster \
-                            --name app_EKS \
+                            --name capstoneEks \
                             --version 1.16 \
                             --nodegroup-name standard-workers \
                             --node-type t2.small \
@@ -81,20 +76,26 @@ pipeline {
                             --zones us-west-2b \
                             --zones us-west-2c \
                         
-                        aws eks --region us-west-2 update-kubeconfig --name app_EKS
-					'''
-				}
-			}
-		}*/
-        stage('Config kubectl context') {
-			steps {
-				withAWS(region:'us-west-2', credentials:'eks_cred') {
-					sh '''
-                        aws eks --region us-west-2 update-kubeconfig --name app_EKS
-						kubectl config use-context arn:aws:eks:us-west-2:531806775431:cluster/app_EKS
+                        aws eks --region us-west-2 update-kubeconfig --name capstoneEks
 					'''
 				}
 			}
 		}
- } 
+        stage('Config kubectl context') {
+			steps {
+				withAWS(region:'us-west-2', credentials:'aws-esk') {
+					sh '''
+                        aws eks --region us-west-2 update-kubeconfig --name capstoneEks
+						kubectl config use-context arn:aws:eks:us-west-2:980543251014:cluster/capstoneEks
+					'''
+				}
+			}
+		}
+    stage('Create EC2 Instance') {
+      steps {
+        ansiblePlaybook playbook: 'main.yaml', inventory: 'inventory'
+      }
+    }
+  }
 }
+© 2020 GitHub, Inc.
