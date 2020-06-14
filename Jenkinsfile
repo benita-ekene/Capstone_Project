@@ -12,7 +12,7 @@ pipeline {
                 '''
             }
         }
-        stage('Lint docker and pyhton') {
+        stage('Lint python and docker') {
             steps {
         	    sh '''
                     cd Docker/
