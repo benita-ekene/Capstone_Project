@@ -1,47 +1,40 @@
 pipeline {
-	agent any 
+	agent any
 	stages {
-		stage('Build') {
-            steps {
-                sh 'echo "Hello World"'
-                sh '''
-                    echo "Multiline shell steps works too"
-                    ls -lah
-                    cd Docker/
-                    make install
-                '''
-            }
-        }
-        stage('Lint python and docker') {
-            steps {
-        	    sh '''
-                    cd Docker/
-        	        make lint
-                '''
-            }
-        }
-		stage('Build Docker Image') {
+
+		stage('Create kubernetes cluster') {
 			steps {
-				sh '''
-                    cd Docker/
-                    bash build_docker.sh
-                '''
-			}
-		}
-        stage('Push Image To Dockerhub') {
-			steps {
-				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub', usernameVariable: 'DOCKER_USER ', passwordVariable: 'DOCKER_PASSWORD ']]){
+				withAWS(region:'us-east-2', credentials:'devops') {
 					sh '''
-                        touch ~/dockerHubPassword
-                        chmod 777 ~/dockerHubPassword
-                        echo "$DOCKER_PASSWORD" > ~/dockerHubPassword
-                        docker login --username ben1ta --password-stdin < /home/ubuntu/dockerHubPassword
-						
-                        docker tag app ben1ta/app
-						docker push ben1ta/app
+						eksctl create cluster \
+						--name capstonecluster \
+						--version 1.16 \
+						--nodegroup-name standard-workers \
+						--node-type t2.small \
+						--nodes 2 \
+						--nodes-min 1 \
+						--nodes-max 3 \
+						--node-ami auto \
+						--region us-east-2 \
+						--zones us-east-2a \
+						--zones us-east-2b \
+						--zones us-east-2c \
 					'''
 				}
 			}
 		}
-	'}',
+
+		
+
+		stage('Create conf file cluster') {
+			steps {
+				withAWS(region:'us-east-2', credentials:'devops') {
+					sh '''
+						aws eks --region us-east-2 update-kubeconfig --name capstonecluster
+					'''
+				}
+			}
+		}
+
+	}
 }
