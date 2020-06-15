@@ -1,22 +1,7 @@
 pipeline {
-  agent any
-  stages {
-    stage('AWS Credentials') {
-      steps {
-        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'blueocean', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-        sh """  
-               mkdir -p ~/.aws
-               echo "[default]" >~/.aws/credentials
-               echo "[default]" >~/.boto
-               echo "aws_access_key_id = ${AWS_ACCESS_KEY_ID}" >>~/.boto
-               echo "aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}">>~/.boto
-               echo "aws_access_key_id = ${AWS_ACCESS_KEY_ID}" >>~/.aws/credentials
-               echo "aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}">>~/.aws/credentials
-        """
-        }
-      }
-    }
-    stage('Build') {
+	agent any 
+	stages {
+		stage('Build') {
             steps {
                 sh 'echo "Hello World"'
                 sh '''
@@ -35,15 +20,15 @@ pipeline {
                 '''
             }
         }
-	stage('Build Docker Image') {
-		steps {
-			sh '''
+		stage('Build Docker Image') {
+			steps {
+				sh '''
                     cd Docker/
                     bash build_docker.sh
                 '''
 			}
 		}
-                stage('Push Image To Dockerhub') {
+        stage('Push Image To Dockerhub') {
 			steps {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub', usernameVariable: 'DOCKER_USER ', passwordVariable: 'DOCKER_PASSWORD ']]){
 					sh '''
@@ -52,50 +37,62 @@ pipeline {
                         echo "$DOCKER_PASSWORD" > ~/dockerHubPassword
                         docker login --username ben1ta --password-stdin < /home/ubuntu/dockerHubPassword
 						
-                        docker tag priceprediction ben1ta/app
-						docker push ben1ta/app
-					'''
-				}
-			}
-		}
-                stage('Create kubernetes cluster') {
-			steps {
-				withAWS(region:'us-west-2', credentials:'aws-esk') {
-					sh '''
-						eksctl create cluster \
-                            --name capstoneEks \
-                            --version 1.16 \
-                            --nodegroup-name standard-workers \
-                            --node-type t2.small \
-                            --nodes 2 \
-                            --nodes-min 1 \
-                            --nodes-max 3 \
-                            --node-ami auto \
-                            --region us-west-2 \
-                            --zones us-west-2a \
-                            --zones us-west-2b \
-                            --zones us-west-2c \
-                        
-                        aws eks --region us-west-2 update-kubeconfig --name capstoneEks
+                        docker tag app ben1ta/app
+						docker ben1ta/app
 					'''
 				}
 			}
 		}
         stage('Config kubectl context') {
 			steps {
-				withAWS(region:'us-west-2', credentials:'aws-esk') {
+				withAWS(region:'us-east-2', credentials:'devops') {
 					sh '''
-                        aws eks --region us-west-2 update-kubeconfig --name capstoneEks
-						kubectl config use-context arn:aws:eks:us-west-2:980543251014:cluster/capstoneEks
+                        aws eks --region us-east-2 update-kubeconfig --name capstonecluster
+						kubectl config use-context arn:aws:eks:us-east-2:531806775431:cluster/capstonecluster
 					'''
 				}
 			}
 		}
-    stage('Create EC2 Instance') {
-      steps {
-        ansiblePlaybook playbook: 'main.yaml', inventory: 'inventory'
-      }
-    }
-  }
+        stage('Blue deployment') {
+			steps {
+				withAWS(region:'us-east-2', credentials:'devops') {
+					sh '''
+						kubectl apply -f ./blue-controller.json
+					'''
+				}
+			}
+		}
+        stage('Green deployment') {
+			steps {
+				withAWS(region:'us-east-2', credentials:'devops') {
+					sh '''
+						kubectl apply -f ./green-controller.json
+					'''
+				}
+			}
+		}
+        stage('Load balancer redirect to blue') {
+			steps {
+				withAWS(region:'us-east-2', credentials:'devops') {
+					sh '''
+						kubectl apply -f ./blue-service.json
+					'''
+				}
+			}
+		}
+        stage('Notification') {
+            steps {
+                input "Switch traffic to green"
+            }
+        }
+        stage('Load balancer redirect to green') {
+			steps {
+				withAWS(region:'us-east-2', credentials:'devops') {
+					sh '''
+						kubectl apply -f ./green-service.json
+					'''
+				}
+			}
+		}
+	}
 }
-© 2020 GitHub, Inc.
