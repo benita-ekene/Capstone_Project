@@ -26,7 +26,7 @@ pipeline {
 
 		
 
-		stage('Create conf file cluster') {
+		stage('Create config file cluster') {
 			steps {
 				withAWS(region:'us-east-2', credentials:'devops') {
 					sh '''
