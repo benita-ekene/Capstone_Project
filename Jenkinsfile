@@ -3,7 +3,7 @@ pipeline {
 	stages {
 		stage('Create kubernetes cluster') {
 			steps {
-				withAWS(region:'us-east-2', credentials:'devops') {
+				withAWS(region:'us-west-2', credentials:'devops') {
 					sh '''
 						eksctl create cluster \
 						--name capstonecluster \
@@ -14,10 +14,10 @@ pipeline {
 						--nodes-min 1 \
 						--nodes-max 3 \
 						--node-ami auto \
-						--region us-east-2 \
-						--zones us-east-2a \
-						--zones us-east-2b \
-						--zones us-east-2c \
+						--region us-west-2 \
+						--zones us-west-2a \
+						--zones us-west-2b \
+						--zones us-west-2c \
 		
 					'''
 				}
