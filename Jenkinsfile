@@ -23,16 +23,5 @@ pipeline {
 				}
 			}
 		}
-
-		stage('Create config file cluster') {
-			steps {
-				withAWS(region:'us-east-2', credentials:'devops') {
-					sh '''
-                        aws eks --region us-east-2 update-kubeconfig --name capstonecluster
-						kubectl config use-context arn:aws:eks:us-east-2:531806775431:cluster/capstonecluster
-					'''
-				}
-			}
-		}
 	}
 }
