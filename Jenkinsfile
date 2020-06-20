@@ -18,6 +18,8 @@ pipeline {
 						--zones us-east-2a \
 						--zones us-east-2b \
 						--zones us-east-2c \
+						
+						 aws eks --region us-west-2 update-kubeconfig --name capstonecluster
 					'''
 				}
 			}
@@ -29,7 +31,8 @@ pipeline {
 			steps {
 				withAWS(region:'us-east-2', credentials:'devops') {
 					sh '''
-						aws eks --region us-east-2 update-kubeconfig --name capstonecluster
+                        aws eks --region us-east-2 update-kubeconfig --name capstonecluster
+						kubectl config use-context arn:aws:eks:us-east-2:531806775431:cluster/capstonecluster
 					'''
 				}
 			}
