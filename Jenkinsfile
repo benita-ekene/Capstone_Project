@@ -18,14 +18,11 @@ pipeline {
 						--zones us-east-2a \
 						--zones us-east-2b \
 						--zones us-east-2c \
-						
-						 aws eks --region us-west-2 update-kubeconfig --name capstonecluster
+		
 					'''
 				}
 			}
 		}
-
-
 
 		stage('Create config file cluster') {
 			steps {
