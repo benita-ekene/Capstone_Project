@@ -45,17 +45,17 @@ pipeline {
 		}
         stage('Config kubectl context') {
 			steps {
-				withAWS(region:'us-east-2', credentials:'devops') {
+				withAWS(region:'us-west-2', credentials:'devops') {
 					sh '''
                         aws eks --region us-east-2 update-kubeconfig --name capstonecluster
-						kubectl config use-context arn:aws:eks:us-east-2:531806775431:cluster/capstonecluster
+						kubectl config use-context arn:aws:eks:us-west-2:531806775431:cluster/capstonecluster
 					'''
 				}
 			}
 		}
         stage('Blue deployment') {
 			steps {
-				withAWS(region:'us-east-2', credentials:'devops') {
+				withAWS(region:'us-west-2', credentials:'devops') {
 					sh '''
 						kubectl apply -f ./blue-controller.json
 					'''
@@ -64,7 +64,7 @@ pipeline {
 		}
         stage('Green deployment') {
 			steps {
-				withAWS(region:'us-east-2', credentials:'devops') {
+				withAWS(region:'us-west-2', credentials:'devops') {
 					sh '''
 						kubectl apply -f ./green-controller.json
 					'''
@@ -73,7 +73,7 @@ pipeline {
 		}
         stage('Load balancer redirect to blue') {
 			steps {
-				withAWS(region:'us-east-2', credentials:'devops') {
+				withAWS(region:'us-west-2', credentials:'devops') {
 					sh '''
 						kubectl apply -f ./blue-service.json
 					'''
@@ -87,7 +87,7 @@ pipeline {
         }
         stage('Load balancer redirect to green') {
 			steps {
-				withAWS(region:'us-east-2', credentials:'devops') {
+				withAWS(region:'us-west-2', credentials:'devops') {
 					sh '''
 						kubectl apply -f ./green-service.json
 					'''
