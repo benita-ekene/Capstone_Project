@@ -35,7 +35,7 @@ pipeline {
                         touch ~/dockerHubPassword
                         chmod 777 ~/dockerHubPassword
                         echo "$DOCKER_PASSWORD" > ~/dockerHubPassword
-                        docker login --username ben1ta --password-stdin < /home/ubuntu/.docker/config.json.
+                        docker login --username ben1ta --password-stdin < /home/ubuntu/.docker
 
 						
                         docker tag app ben1ta/app
