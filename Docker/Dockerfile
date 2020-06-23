@@ -1,6 +1,6 @@
 FROM python:3.7.3-stretch
 
-LABEL maintainer="Benita Ekene <dmnion4.glowd@gmail.com>"
+MAINTAINER Benita Ojugo dmnion4.glowd@gmail.com
 
 ## Step 1:
 # Create a working directory
