@@ -1,7 +1,7 @@
 pipeline {
 	agent any
 	stages {
-		stage('Create kubernetes cluster') {
+		/*stage('Create kubernetes cluster') {
 			steps {
 				withAWS(region:'us-west-2', credentials:'devops') {
 					sh '''
@@ -22,6 +22,6 @@ pipeline {
 					'''
 				}
 			}
-		}
+		}*/
 	}
 }
