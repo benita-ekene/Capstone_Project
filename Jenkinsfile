@@ -28,22 +28,20 @@ pipeline {
                 '''
 			}
 		}
-        stage('Push Image To Dockerhub') {
-			steps {
-				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'capstone', usernameVariable: 'DOCKER_USER ', passwordVariable: 'DOCKER_PASSWORD ']]){
-					sh '''
-                        touch ~/dockerHubPassword
-                        chmod 777 ~/dockerHubPassword
-                        echo "$DOCKER_PASSWORD" > ~/dockerHubPassword
-                        docker login --username ben1ta --password-stdin < /home/ubuntu/dockerpassword
-
-						
-                        docker tag app ben1ta/app
-						docker ben1ta/app
-					'''
-				}
-			}
-		}
+         stage('Push Image to DockerHub') {
+            steps{
+                script {
+                    docker.withRegistry( '', registryCredential ) {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+        stage('Remove Unused docker image') {
+            steps{
+                sh "docker rmi $registry:$BUILD_NUMBER"
+            }
+        }
         stage('Config kubectl context') {
 			steps {
 				withAWS(region:'us-west-2', credentials:'devops') {
