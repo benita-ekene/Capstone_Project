@@ -30,7 +30,7 @@ pipeline {
 		}
         stage('Push Image To Dockerhub') {
 			steps {
-				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub', usernameVariable: 'DOCKER_USER ', passwordVariable: 'DOCKER_PASSWORD ']]){
+				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'capstone', usernameVariable: 'DOCKER_USER ', passwordVariable: 'DOCKER_PASSWORD ']]){
 					sh '''
                         touch ~/dockerHubPassword
                         chmod 777 ~/dockerHubPassword
