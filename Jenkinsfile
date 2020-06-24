@@ -20,24 +20,21 @@ pipeline {
                 '''
             }
         }
-		stage('Build Docker Image') {
-			steps {
-				sh '''
-                    cd Docker/
-                    bash build_docker.sh
-                '''
-			}
-		}
-        stage( 'Push image to dockerhub repo' ) {
+		stage( 'Build docker image' ) {
             steps {
-                withDockerRegistry([url: "", credentialsId: "capstone"]) {
-                    sh 'echo "STAGE 3: Uploading image to dockerhub repository ..."'
-                    sh 'docker login'
-                    sh 'docker tag app: ben1ta/app'
-                    sh 'docker push ben1ta/app'          
-                }
+                sh 'docker build -t app:latest .'
+                sh 'docker image ls'                  
             }
         } 
+        stage( 'Upload image to dockerhub repo' ) {
+            steps {
+                withDockerRegistry([url: "", credentialsId: "dockerhub"]) {
+                    sh 'docker login'
+                    sh 'docker tag app:latest ben1ta/app:latest'
+                    sh 'docker push ben1ta/app:latest'          
+                }
+            }
+        }           
         stage('Config kubectl context') {
 			steps {
 				withAWS(region:'us-west-2', credentials:'devops') {
