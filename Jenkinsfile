@@ -20,22 +20,26 @@ pipeline {
                 '''
             }
         }
-		stage('Build docker image') {
-            steps{
-                script {
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
-                }
-            }
-        }
-        stage('Push Image to Docker hub') {
-            steps{
-                script {
-                    docker.withRegistry( '', registryCredential ) {
-                        dockerImage.push()
-                    }
-                }
-            }
-        }
+		stage('Build Docker Image') {
+			steps {
+				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'capstone', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
+					sh '''
+						docker build -t ben1ta/app .
+					'''
+				}
+			}
+		}
+
+		stage('Push Image To Dockerhub') {
+			steps {
+				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'capstone', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
+					sh '''
+						docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+						docker push ben1ta/app
+					'''
+				}
+			}
+		}
         stage('Config kubectl context') {
 			steps {
 				withAWS(region:'us-west-2', credentials:'devops') {
