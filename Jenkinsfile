@@ -20,21 +20,22 @@ pipeline {
                 '''
             }
         }
-		stage( 'Build docker image' ) {
-            steps {
-                sh 'docker build -t app:latest .'
-                sh 'docker image ls'                  
-            }
-        } 
-        stage( 'Upload image to dockerhub repo' ) {
-            steps {
-                withDockerRegistry([url: "", credentialsId: "dockerhub"]) {
-                    sh 'docker login'
-                    sh 'docker tag app:latest ben1ta/app:latest'
-                    sh 'docker push ben1ta/app:latest'          
+		stage('Build docker image') {
+            steps{
+                script {
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
                 }
             }
-        }           
+        }
+        stage('Push Image to Docker hub') {
+            steps{
+                script {
+                    docker.withRegistry( '', registryCredential ) {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
         stage('Config kubectl context') {
 			steps {
 				withAWS(region:'us-west-2', credentials:'devops') {
