@@ -28,21 +28,16 @@ pipeline {
                 '''
 			}
 		}
-         stage('Push Image To Dockerhub') {
-			steps {
-				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'capstone', usernameVariable: 'DOCKER_USER ', passwordVariable: 'DOCKER_PASSWORD ']]){
-					sh '''
-                        touch ~/dockerpassword 
-                        chmod 777 ~/dockerpassword 
-                        echo "$DOCKER_PASSWORD" > ~/dockerpassword 
-                        docker login --username ben1ta --password-stdin < /home/ubuntu/dockerpassword 
-						
-                        docker tag app ben1ta/app
-						docker push ben1ta/app
-					'''
-				}
-			}
-		}
+        stage( 'Push image to dockerhub repo' ) {
+            steps {
+                withDockerRegistry([url: "", credentialsId: "capstone"]) {
+                    sh 'echo "STAGE 3: Uploading image to dockerhub repository ..."'
+                    sh 'docker login'
+                    sh 'docker tag app:v1.0 ben1ta/app:v1.0'
+                    sh 'docker push ben1ta/app:v1.0'          
+                }
+            }
+        } 
         stage('Config kubectl context') {
 			steps {
 				withAWS(region:'us-west-2', credentials:'devops') {
