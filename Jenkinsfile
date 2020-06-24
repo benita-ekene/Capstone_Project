@@ -24,6 +24,7 @@ pipeline {
 			steps {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'capstone', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
+					        cd Docker/
 						docker build -t ben1ta/app .
 					'''
 				}
@@ -34,6 +35,7 @@ pipeline {
 			steps {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'capstone', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
+					        cd Docker/
 						docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 						docker push ben1ta/app
 					'''
