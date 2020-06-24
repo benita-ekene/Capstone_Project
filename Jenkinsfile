@@ -33,8 +33,8 @@ pipeline {
                 withDockerRegistry([url: "", credentialsId: "capstone"]) {
                     sh 'echo "STAGE 3: Uploading image to dockerhub repository ..."'
                     sh 'docker login'
-                    sh 'docker tag app:v1.0 ben1ta/app:v1.0'
-                    sh 'docker push ben1ta/app:v1.0'          
+                    sh 'docker tag app: ben1ta/app'
+                    sh 'docker push ben1ta/app'          
                 }
             }
         } 
