@@ -48,7 +48,8 @@ pipeline {
 				withAWS(region:'us-west-2', credentials:'devops') {
 					sh '''
                         aws eks --region us-west-2 update-kubeconfig --name capstonecluster
-						sudo chmod +x kubectl config use-context arn:aws:eks:us-west-2:531806775431:cluster/capstonecluster
+						sudo chmod +x /home/ubuntu/bin/kubectl 
+						kubectl config use-context arn:aws:eks:us-west-2:531806775431:cluster/capstonecluster
 					'''
 				}
 			}
