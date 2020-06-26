@@ -42,7 +42,13 @@ pipeline {
 				}
 			}
 		}
-		
+		stage('Execute Shell') {
+            steps {
+        	    sh '''
+        	        whoami
+                '''
+            }
+        }
                 stage('Config kubectl context') {
 			steps {
 				withAWS(region:'us-west-2', credentials:'devops') {
