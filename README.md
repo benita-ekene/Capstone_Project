@@ -19,8 +19,14 @@ In this project, you will need to install Jenkins, and a few plugins to build an
 ## Project Task
 #### * Use Jenkins and implement Blue/Green deployment strategy.
 1.  Launch an ubuntu 18.04 ec2 instancer for jenkins server
-2.  Install and setup jenkins on ubuntu 18.04 with instruction from the link https://linuxize.com/post/how-to-install-jenkins-on-ubuntu-18-04/ or any other link as you would prefer
-3.  Install Docker, AWSCLI, Hadolint and Pylint
+2.  Install and setup jenkins on ubuntu 18.04 with instruction from the link https://linuxize.com/post/how-to-install-jenkins-on-ubuntu-18-04/ or with any other link as you would prefer
+3.  Install Docker with instruction from the link https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04/ or with any other link as you would prefer
+4.  Install AWSCLI  with instruction from the link https://docs.aws.amazon.com/cli/latest/userguide/install-linux.html or with any other link as you would prefer
+5.  Install Hadolint with instruction from the link wget -O hadolint https://github.com/hadolint/hadolint/releases/download/v1.1/hadolint_linux_amd64 &&\
+sudo chmod +x hadolint &&\
+sudo mv hadolint /usr/bin/ or with any other link as you would prefer
+6.  Install Pylint with instruction from the link https://askubuntu.com/questions/340940/installing-pylint-for-python3-on-ubuntu or with any other link as you would prefer
+7.  Install eksctl and kubectl following this link https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html or any other link as you would prefe.
 
 #### * Pick AWS Kubernetes as a Service.
 Create kubernets cluster and config file cluster on us-west-2 with the Jenkinsfile on the master branch. This should create the EC2 instances.
