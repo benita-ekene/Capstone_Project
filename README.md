@@ -28,7 +28,7 @@ Create kubernets cluster and config file cluster on us-west-2 with the Jenkinsfi
 * Build your pipeline.
 The jenkinsfile on the master and Blue-Green-Deployment branches constitute the pipelines for this project.
 
-*Test your pipeline
+* Test your pipeline
 The builds performed on the pipelines is shown on the screenshots folder.
 
 
