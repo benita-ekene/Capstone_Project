@@ -24,7 +24,7 @@ In this project, you will need to install Jenkins, and a few plugins to build an
 4.  Install AWSCLI  with instruction from the link https://docs.aws.amazon.com/cli/latest/userguide/install-linux.html or with any other link as you would prefer
 5.  Install Hadolint with instruction from the link wget -O hadolint https://github.com/hadolint/hadolint/releases/download/v1.1/hadolint_linux_amd64 &&\
 sudo chmod +x hadolint &&\
-sudo mv hadolint /usr/bin/ or with any other link as you would prefer
+sudo mv hadolint /usr/bin/ 
 6.  Install Pylint with instruction from the link https://askubuntu.com/questions/340940/installing-pylint-for-python3-on-ubuntu or with any other link as you would prefer
 7.  Install eksctl and kubectl following this link https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html or any other link as you would prefe.
 
