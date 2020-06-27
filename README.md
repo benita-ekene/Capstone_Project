@@ -29,13 +29,13 @@ sudo mv hadolint /usr/bin/
 7.  Install eksctl and kubectl following this link https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html or any other link as you would prefe.
 
 #### * Pick AWS Kubernetes as a Service.
-Create kubernets cluster and config file cluster on us-west-2 with the Jenkinsfile on the master branch. This should create the EC2 instances.
+Create kubernets cluster and config file cluster on us-west-2 with the Jenkinsfile on this master branch. This should create the EC2 instances.
 
 #### * Build your pipeline.
 The jenkinsfile on the master and Blue-Green-Deployment branches constitute the pipelines for this project.
 
 #### * Test your pipeline
-The builds performed on the pipelines is shown on the screenshots folder.
+The builds performed on the pipelines are shown on the screenshots folder.
 
 
 
