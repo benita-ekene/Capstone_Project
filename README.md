@@ -1,9 +1,9 @@
 # CAPSTONE PROJECT
-This project uses Jenkins pipeline to deploy a Machine Learning Microservice API to Kubernetes Cluster and implement Blue-Green deployment strategy.
+This project uses Jenkins pipeline to deploy a Machine Learning Microservice API to Kubernetes Cluster and implements Blue-Green deployment strategy.
 This repo has one more branch, other than this master branch.
 
 * Blue-Green-Deployment branch corresponds to the blue/green deployment strategy.
-* Make sure that you checkout branch Blue-Green-Deployment to see how blue/green deployment was performed in this project.
+* Make sure that you checkout Blue-Green-Deployment to see how blue/green deployment was performed in this project.
 
 ## Dependencies 
 #### 1.  IAM user account
